@@ -101,13 +101,21 @@
 
       ref = db.ref(`notes/${currentCode}`);
 
-      ref.on("value", (snapshot) => {
-        const newText = snapshot.val() || "";
-        if (!isLocalChange && noteArea.value !== newText) {
-          noteArea.value = newText;
-        }
-        isLocalChange = false;
-      });
+     ref.on("value", (snapshot) => {
+      const newText = snapshot.val() || "";
+      if (!isLocalChange && noteArea.value !== newText) {
+        const selectionStart = noteArea.selectionStart;
+        const selectionEnd = noteArea.selectionEnd;
+    
+        noteArea.value = newText;
+            
+        const newLength = noteArea.value.length;
+        noteArea.selectionStart = Math.min(selectionStart, newLength);
+        noteArea.selectionEnd = Math.min(selectionEnd, newLength);
+      }
+      isLocalChange = false;
+    });
+
 
       noteArea.addEventListener("input", () => {
         if (ref) {
