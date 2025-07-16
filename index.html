@@ -26,13 +26,14 @@
   <h1>Shared Notes</h1>
 
   <div id="login">
-    <p>Enter your shared code:</p>
+    <p>Enter your shared code, or put a new one:</p>
     <input type="text" id="codeInput" placeholder="e.g., mathnotes2025" />
     <button onclick="joinDocument()">Join</button>
   </div>
 
   <div id="editor">
     <p>Editing note for code: <b id="docCode"></b></p>
+    <button onclick="makeEncrypted(20)">or generate one!</button>
     <textarea id="noteArea" placeholder="Start typing..."></textarea>
     <p>Auto-saved in your browser 🔒</p>
     <button onclick="switchDoc()">Switch Document</button>
@@ -46,6 +47,19 @@
     const docCode = document.getElementById('docCode');
 
     let currentCode = '';
+
+   function makeEncrypted(length) {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,;'/";
+    let result = "";
+  
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters[randomIndex];
+    }
+  
+    codeInput.value = result;
+  }
+
 
     function showLogin() {
       login.style.display = 'block';
