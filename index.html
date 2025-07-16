@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Shared Notes</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database.js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -35,11 +37,25 @@
   <div id="editor">
     <p>Editing note for code: <b id="docCode"></b></p>
     <textarea id="noteArea" placeholder="Start typing..."></textarea>
-    <p>Auto-saved in your browser 🔒</p>
+    <p>Auto-saved globally 🌍</p>
     <button onclick="switchDoc()">Switch Document</button>
   </div>
 
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAS_Gea_k1gwJJxHfQmDsC6JiLBbhp_wXE",
+      authDomain: "notesharex.firebaseapp.com",
+      databaseURL: "https://notesharex-default-rtdb.firebaseio.com",
+      projectId: "notesharex",
+      storageBucket: "notesharex.firebasestorage.app",
+      messagingSenderId: "308351587182",
+      appId: "1:308351587182:web:2c8ed01e13c0115d23677f",
+      measurementId: "G-ENP61S6D50"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     const login = document.getElementById('login');
     const editor = document.getElementById('editor');
     const noteArea = document.getElementById('noteArea');
@@ -47,19 +63,18 @@
     const docCode = document.getElementById('docCode');
 
     let currentCode = '';
+    let ref = null;
+    let isLocalChange = false;
 
-   function makeEncrypted(length) {
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,;'/";
-    let result = "";
-  
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      result += characters[randomIndex];
+    function makeEncrypted(length) {
+      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.,;'/";
+      let result = "";
+      for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters[randomIndex];
+      }
+      codeInput.value = result;
     }
-  
-    codeInput.value = result;
-  }
-
 
     function showLogin() {
       login.style.display = 'block';
@@ -78,25 +93,34 @@
       currentCode = code;
       docCode.textContent = currentCode;
 
-      const saved = localStorage.getItem(`note_${currentCode}`);
-      noteArea.value = saved || "";
-
       showEditor();
+
+      ref = db.ref(`notes/${currentCode}`);
+
+      ref.on("value", (snapshot) => {
+        const newText = snapshot.val() || "";
+        if (!isLocalChange && noteArea.value !== newText) {
+          noteArea.value = newText;
+        }
+        isLocalChange = false;
+      });
+
+      noteArea.addEventListener("input", () => {
+        if (ref) {
+          isLocalChange = true;
+          ref.set(noteArea.value);
+        }
+      });
     }
 
     function switchDoc() {
+      if (ref) ref.off();
       currentCode = '';
       codeInput.value = '';
+      noteArea.value = '';
       showLogin();
     }
 
-    noteArea.addEventListener('input', () => {
-      if (currentCode) {
-        localStorage.setItem(`note_${currentCode}`, noteArea.value);
-      }
-    });
-
-    // Start on login
     showLogin();
   </script>
 </body>
