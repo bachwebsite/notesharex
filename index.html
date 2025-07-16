@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Shared Notes</title>
-  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
+
+  
   <style>
     body {
       font-family: sans-serif;
@@ -42,12 +45,13 @@
   </div>
 
   <script>
+     window.onload = function () {
     const firebaseConfig = {
       apiKey: "AIzaSyAS_Gea_k1gwJJxHfQmDsC6JiLBbhp_wXE",
       authDomain: "notesharex.firebaseapp.com",
       databaseURL: "https://notesharex-default-rtdb.firebaseio.com",
       projectId: "notesharex",
-      storageBucket: "notesharex.firebasestorage.app",
+      storageBucket: "notesharex.appspot.com",
       messagingSenderId: "308351587182",
       appId: "1:308351587182:web:2c8ed01e13c0115d23677f",
       measurementId: "G-ENP61S6D50"
@@ -122,6 +126,7 @@
     }
 
     showLogin();
+  }
   </script>
 </body>
 </html>
