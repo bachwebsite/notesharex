@@ -27,13 +27,13 @@
 
   <div id="login">
     <p>Enter your shared code, or put a new one:</p>
+    <button onclick="makeEncrypted(20)">or generate one!</button>
     <input type="text" id="codeInput" placeholder="e.g., mathnotes2025" />
     <button onclick="joinDocument()">Join</button>
   </div>
 
   <div id="editor">
     <p>Editing note for code: <b id="docCode"></b></p>
-    <button onclick="makeEncrypted(20)">or generate one!</button>
     <textarea id="noteArea" placeholder="Start typing..."></textarea>
     <p>Auto-saved in your browser 🔒</p>
     <button onclick="switchDoc()">Switch Document</button>
