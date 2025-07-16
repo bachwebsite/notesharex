@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shared Notes</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f4f4f4;
+    }
+    #login, #editor {
+      display: none;
+    }
+    textarea {
+      width: 100%;
+      height: 300px;
+      padding: 1rem;
+      font-size: 16px;
+      font-family: monospace;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body>
+  <h1>Shared Notes</h1>
+
+  <div id="login">
+    <p>Enter your shared code:</p>
+    <input type="text" id="codeInput" placeholder="e.g., mathnotes2025" />
+    <button onclick="joinDocument()">Join</button>
+  </div>
+
+  <div id="editor">
+    <p>Editing note for code: <b id="docCode"></b></p>
+    <textarea id="noteArea" placeholder="Start typing..."></textarea>
+    <p>Auto-saved in your browser 🔒</p>
+    <button onclick="switchDoc()">Switch Document</button>
+  </div>
+
+  <script>
+    const login = document.getElementById('login');
+    const editor = document.getElementById('editor');
+    const noteArea = document.getElementById('noteArea');
+    const codeInput = document.getElementById('codeInput');
+    const docCode = document.getElementById('docCode');
+
+    let currentCode = '';
+
+    function showLogin() {
+      login.style.display = 'block';
+      editor.style.display = 'none';
+    }
+
+    function showEditor() {
+      login.style.display = 'none';
+      editor.style.display = 'block';
+    }
+
+    function joinDocument() {
+      const code = codeInput.value.trim();
+      if (!code) return alert("Please enter a code.");
+
+      currentCode = code;
+      docCode.textContent = currentCode;
+
+      const saved = localStorage.getItem(`note_${currentCode}`);
+      noteArea.value = saved || "";
+
+      showEditor();
+    }
+
+    function switchDoc() {
+      currentCode = '';
+      codeInput.value = '';
+      showLogin();
+    }
+
+    noteArea.addEventListener('input', () => {
+      if (currentCode) {
+        localStorage.setItem(`note_${currentCode}`, noteArea.value);
+      }
+    });
+
+    // Start on login
+    showLogin();
+  </script>
+</body>
+</html>
